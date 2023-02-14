@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:13-alpine3.17
+    container_name: PostgresDB
+    restart: on-failure
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  auth_service:
+    container_name: FlaskAUTH
+    build: ./auth_service
+    env_file:
+      - .env
+    ports:
+      - "8088:8088"
+
+  nginx:
+    container_name: Nginx
+    build: ./nginx
+    ports:
+      - "8087:80"
+
+  redis:
+    image: redis
+    container_name: Redis
+    restart: on-failure
+    volumes:
+      - redis_volume:/var/lib/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    expose:
+      - 6379
+
+
+volumes:
+  postgres_volume:
+  redis_volume:
