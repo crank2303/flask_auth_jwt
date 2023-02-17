@@ -16,6 +16,8 @@ services:
   auth_service:
     container_name: FlaskAUTH
     build: ./auth_service
+    volumes:
+      - static_data:/app/static
     env_file:
       - .env
     ports:
@@ -24,6 +26,8 @@ services:
   nginx:
     container_name: Nginx
     build: ./nginx
+    volumes:
+      - static_data:/static
     ports:
       - "8087:80"
 
@@ -43,3 +47,4 @@ services:
 volumes:
   postgres_volume:
   redis_volume:
+  static_data:
