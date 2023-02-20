@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+import redis
 from settings import settings
 
 db = SQLAlchemy()
+redis_db = redis.Redis(host='localhost', port=6379, db=0)
 
 
 def init_db(app: Flask):
