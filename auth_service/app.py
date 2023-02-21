@@ -1,20 +1,20 @@
 import os
-import click
-import logger
-
 from datetime import timedelta
+
+import click
 from flask import Flask
-from flask_redoc import Redoc
 from flask import request, send_from_directory
 from flask.cli import with_appcontext
 from flask_jwt_extended import JWTManager
+from flask_redoc import Redoc
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from database.service import create_user, assign_role_to_user, get_users_roles
-from database.models import Roles
+import logger
 from api.v1.blueprint import blueprint
 from database.cache_redis import redis_app
-from database.postgresql import init_db
+from database.models import Roles
+from database.postgresql import init_db, db
+from database.service import create_user, assign_role_to_user, get_users_roles
 
 ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 REFRESH_TOKEN_EXPIRES = timedelta(days=7)
@@ -97,6 +97,7 @@ def app_run():
     app = create_app()
     init_db(app)
     app.app_context().push()
+    db.create_all()
     return app
 
 

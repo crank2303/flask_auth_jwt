@@ -10,7 +10,7 @@ from .models import Users, AuthLogs, Roles, UsersRoles
 
 def create_user(username, password):
     hashed_password = generate_password_hash(password, method='sha256')
-    new_user = Users(username=username,
+    new_user = Users(login=username,
                      password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
@@ -55,7 +55,7 @@ def change_password(user: Users, password: str):
     db.session.commit()
 
 
-def create_role(role_name: str) -> Roles:
+def create_role_db(role_name: str) -> Roles:
     new_role = Roles(name=role_name)
     db.session.add(new_role)
     db.session.commit()
@@ -63,12 +63,12 @@ def create_role(role_name: str) -> Roles:
     return new_role
 
 
-def delete_role(role: Roles):
+def delete_role_db(role: Roles):
     db.session.delete(role)
     db.session.commit()
 
 
-def change_role(role_name: str, new_name: str):
+def change_role_db(role_name: str, new_name: str):
     role = Roles.query.filter_by(name=role_name).first()
     role.name = new_name
     db.session.commit()

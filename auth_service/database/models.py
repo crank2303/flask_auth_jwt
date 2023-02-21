@@ -17,7 +17,7 @@ class Users(db.Model):
         unique=True,
         nullable=False,
     )
-    username = db.Column(
+    login = db.Column(
         db.String,
         unique=True,
         nullable=False,
@@ -28,7 +28,7 @@ class Users(db.Model):
     )
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.login}>'
 
 
 class AuthLogs(db.Model):

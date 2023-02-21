@@ -108,7 +108,7 @@ paths:
               $ref: '#/components/schemas/Role'
       parameters:
         - in: query
-          name: new_role
+          name: role
           schema:
             type: string
           required: true
@@ -191,3 +191,41 @@ paths:
           description: New role was deleted
         '404':
           description: Role doesnt exist in database
+  /register:
+    post:
+      tags:
+        - Managing Users
+      summary: Создание нового пользователя
+      parameters:
+        - in: query
+          name: login
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: New user was created
+  /login:
+    post:
+      tags:
+        - Managing Users
+      summary: Авторизация существующего пользователя
+      parameters:
+        - in: query
+          name: login
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: User has authorized
