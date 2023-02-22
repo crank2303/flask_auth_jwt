@@ -22,10 +22,12 @@ def create_role():
 def delete_role():
     role = request.values.get("role", None)
     if not role:
-        return make_response('Role is empty', HTTPStatus.BAD_REQUEST)
+        return make_response('Role is empty',
+                             HTTPStatus.BAD_REQUEST)
     db_role = Roles.query.filter_by(name=role).first()
     if not db_role:
-        return make_response('Role does not exist', HTTPStatus.NOT_FOUND)
+        return make_response('Role does not exist',
+                             HTTPStatus.NOT_FOUND)
     delete_role_db(db_role)
     return jsonify(msg=f'Role {role} was successfully deleted')
 
@@ -35,7 +37,8 @@ def change_role():
     role = request.values.get("role", None)
     new_role = request.values.get("new_name", None)
     if not role or not new_role:
-        return make_response('Role or new name is empty', HTTPStatus.BAD_REQUEST)
+        return make_response('Role or new name is empty',
+                             HTTPStatus.BAD_REQUEST)
     db_role = Roles.query.filter_by(name=role).first()
     if not db_role:
         return make_response('Role does not exist', HTTPStatus.NOT_FOUND)

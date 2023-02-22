@@ -229,3 +229,138 @@ paths:
       responses:
         '200':
           description: User has authorized
+  /change_login:
+    post:
+      tags:
+        - Personal account
+      parameters:
+        - in: query
+          name: new_username
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Username was successfully changed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Login already existed
+  /change_password:
+    post:
+      tags:
+        - Personal account
+      parameters:
+        - in: query
+          name: new_password
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Password was successfully changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Could not change password
+  /login_history:
+    get:
+      tags:
+        - Personal account
+      description: Login history of current user
+      responses:
+        '200':
+          description: User's login history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthLogs'
+        '401':
+          description: Couldnot verify
+  /logout:
+    delete:
+      tags:
+        - Personal account
+      responses:
+        '200':
+          description: revoke access/refresh token
+        '401':
+          description: Could not verify token
+  /refresh:
+    get:
+      tags:
+        - Personal account
+      responses:
+        '200':
+          description: new pair of access and refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Could not verify token
+  /assign_role:
+    post:
+      tags:
+        - Managing User's roles
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: role
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Role was assigned to user
+        '401':
+          description: Role or username is empty
+        '500':
+          description: Could not assign role to user
+  /detach_role:
+    delete:
+      tags:
+        - Managing User's roles
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: role
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Role was assigned to user
+        '401':
+          description: Role or username is empty
+        '500':
+          description: Could not assign role to user
+  /users_roles:
+    get:
+      tags:
+        - Managing User's roles
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: List of user's roles
+        '401':
+          description: Could not verify
