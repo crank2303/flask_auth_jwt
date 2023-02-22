@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 from database.service import create_user
 from database.models import Users
-from roles.administrator import admin_or_manager_required
 from flask import jsonify, request, make_response
 from werkzeug.security import check_password_hash
 
