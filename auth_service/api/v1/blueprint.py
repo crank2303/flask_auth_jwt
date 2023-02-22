@@ -26,16 +26,6 @@ blueprint.add_url_rule(
     methods=["GET"],
     view_func=roles_list,
 )
-blueprint.add_url_rule(
-    '/register',
-    methods=["POST"],
-    view_func=sign_up,
-)
-blueprint.add_url_rule(
-    '/login',
-    methods=["POST"],
-    view_func=login,
-)
 
 blueprint.add_url_rule(
     '/users_roles',
