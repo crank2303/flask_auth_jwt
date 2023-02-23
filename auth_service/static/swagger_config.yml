@@ -4,7 +4,7 @@ info:
   description: API services for online-cinema
   version: '1.0'
 servers:
-  - url: http://localhost:8088/api/v1
+  - url: http://localhost:8087/api/v1
 tags:
   - name: Managing Roles
     description: API for CRUD roles

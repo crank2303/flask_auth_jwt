@@ -1,9 +1,9 @@
-import os
 import abc
-import redis
+import os
 from datetime import timedelta
 from typing import Optional, Any
 
+import redis
 from aioredis import Redis
 
 redis_app = redis.Redis(

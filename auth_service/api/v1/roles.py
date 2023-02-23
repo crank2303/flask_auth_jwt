@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
-from database.service import create_role_db, delete_role_db, change_role_db
-from database.models import Roles, Users
-from roles.administrator import required
 from flask import jsonify, request, make_response
+
+from database.models import Roles
+from database.service import create_role_db, delete_role_db, change_role_db
+from roles.administrator import required
 
 
 @required(role='manager')

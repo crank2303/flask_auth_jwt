@@ -1,8 +1,8 @@
 import uuid
+from datetime import datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
 
 from .postgresql import db
 
@@ -18,15 +18,20 @@ class Users(db.Model):
         nullable=False,
     )
     login = db.Column(
-        db.String,
+        db.String(30),
         unique=True,
         nullable=False,
     )
     password = db.Column(
-        db.String,
+        db.String(30),
         nullable=False,
     )
-
+    authlogs = db.relationship(
+        "AuthLogs",
+        back_populates="user",
+        cascade="all, delete",
+        passive_deletes=True,
+    )
     def __repr__(self):
         return f'<User {self.login}>'
 
@@ -43,14 +48,15 @@ class AuthLogs(db.Model):
     )
     user_id = db.Column(
         UUID(as_uuid=True),
-        ForeignKey(Users.id),
+        ForeignKey(Users.id, ondelete="CASCADE"),
+        nullable=False,
     )
     user_agent = db.Column(
-        db.String,
+        db.String(30),
         nullable=False,
     )
     log_type = db.Column(
-        db.String,
+        db.String(30),
         nullable=True,
     )
     datetime = db.Column(
@@ -59,8 +65,12 @@ class AuthLogs(db.Model):
         default=datetime.now()
     )
     ip_address = db.Column(
-        db.String,
+        db.String(30),
         nullable=True,
+    )
+    user = db.relationship(
+        "Users",
+        back_populates="authlogs",
     )
 
 
@@ -75,7 +85,7 @@ class Roles(db.Model):
         nullable=False,
     )
     name = db.Column(
-        db.String,
+        db.String(30),
         unique=True,
         nullable=False,
     )
