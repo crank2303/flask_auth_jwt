@@ -2,11 +2,11 @@ from http import HTTPStatus
 
 from database.service import get_roles_by_user, assign_role_to_user, detach_role_from_user
 from database.models import Roles, Users
-from decorators import admin_required
+from decorators import required
 from flask import jsonify, request, make_response
 
 
-@admin_required()
+@required(role='admin')
 def users_roles():
     username = request.json.get("username", None)
     if not username:
@@ -16,7 +16,7 @@ def users_roles():
     return jsonify(roles=output)
 
 
-@admin_required()
+@required(role='admin')
 def assign_role():
     username = request.json.get("username", None)
     role = request.json.get("role", None)
@@ -32,7 +32,7 @@ def assign_role():
     return jsonify(msg=f'Role {role} was assigned to user {username}')
 
 
-@admin_required()
+@required(role='admin')
 def detach_role():
     username = request.json.get('username', None)
     role = request.json.get('role', None)

@@ -2,11 +2,11 @@ from http import HTTPStatus
 
 from database.service import create_role_db, delete_role_db, change_role_db
 from database.models import Roles, Users
-from roles.administrator import admin_or_manager_required
+from roles.administrator import required
 from flask import jsonify, request, make_response
 
 
-@admin_or_manager_required()
+@required(role='manager')
 def create_role():
     role = request.values.get('role', None)
     if not role:
@@ -18,7 +18,7 @@ def create_role():
     return jsonify(msg=f'Role {role} was successfully created')
 
 
-@admin_or_manager_required()
+@required(role='manager')
 def delete_role():
     role = request.values.get("role", None)
     if not role:
@@ -32,7 +32,7 @@ def delete_role():
     return jsonify(msg=f'Role {role} was successfully deleted')
 
 
-@admin_or_manager_required()
+@required(role='manager')
 def change_role():
     role = request.values.get("role", None)
     new_role = request.values.get("new_name", None)
@@ -46,7 +46,7 @@ def change_role():
     return jsonify(msg=f'Role {role} was successfully changed')
 
 
-@admin_or_manager_required()
+@required(role='manager')
 def roles_list():
     roles = Roles.query.all()
     output = [role.name for role in roles]
