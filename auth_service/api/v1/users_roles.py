@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from database.service import get_roles_by_user, assign_role_to_user, detach_role_from_user
 from database.models import Roles, Users
-from decorators import required
+from roles.administrator import required
 from flask import jsonify, request, make_response
 
 
