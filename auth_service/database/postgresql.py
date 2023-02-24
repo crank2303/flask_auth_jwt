@@ -3,8 +3,10 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from core.settings import settings
+
 db = SQLAlchemy()
-SQLALCHEMY_DATABASE_URI = f"postgresql://{os.environ.get('POSTGRES_USER')}:{os.environ.get('POSTGRES_PASSWORD')}@{os.environ.get('PG_HOST')}:{os.environ.get('PG_PORT')}/{os.environ.get('POSTGRES_DB')}"
+SQLALCHEMY_DATABASE_URI = f"postgresql://{settings.postgres_user}:{settings.postgres_password}@{settings.pg_host}:{settings.pg_port}/{settings.postgres_db}"
 
 
 def init_db(app: Flask):

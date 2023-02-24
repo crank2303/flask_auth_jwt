@@ -4,7 +4,7 @@ from pathlib import Path
 from logging import config as logging_config
 from pydantic import BaseSettings, Field
 
-from logger import LOGGING
+from auth_service.core.logger import LOGGING
 
 
 class Settings(BaseSettings):
