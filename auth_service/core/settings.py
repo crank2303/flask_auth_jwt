@@ -4,7 +4,7 @@ from pathlib import Path
 from logging import config as logging_config
 from pydantic import BaseSettings, Field
 
-from auth_service.core.logger import LOGGING
+from core.logger import LOGGING
 
 
 class Settings(BaseSettings):
@@ -30,4 +30,3 @@ class Settings(BaseSettings):
     jwt_refresh_token_expires: int = Field(120, env='JWT_REFRESH_TOKEN_EXPIRES')
 
 settings = Settings()
-logging_config.dictConfig(LOGGING)
