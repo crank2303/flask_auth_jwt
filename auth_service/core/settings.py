@@ -8,10 +8,10 @@ from core.logger import LOGGING
 
 
 class Settings(BaseSettings):
-    app_url: str = Field(..., env='APP_URL')
+    app_url: str = Field('http://localhost', env='APP_URL')
 
-    pg_host: str = Field('postgres', env='PG_HOST')
-    pg_port: int = Field(5432, env='PG_PORT')
+    pg_host: str = Field('127.0.0.1', env='PG_HOST')
+    pg_port: int = Field(5433, env='PG_PORT')
     postgres_user: str = Field('app', env='POSTGRES_USER')
     postgres_password: str = Field('123qwe', env='POSTGRES_PASSWORD')
     postgres_db: str = Field('auth_database', env='POSTGRES_DB')
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     admin_username: str = Field('admin', env='ADMIN_USERNAME')
     admin_password: str = Field('admin', env='ADMIN_PASSWORD')
 
-    jwt_secret_key: str = Field(..., env='JWT_SECRET_KEY')
+    jwt_secret_key: str = Field('qTFToYm{b6XuYnQPYG|H6GY|5eIR6|sv', env='JWT_SECRET_KEY')
     jwt_access_token_expires: int = Field(120, env='JWT_ACCESS_TOKEN_EXPIRES')
     jwt_refresh_token_expires: int = Field(120, env='JWT_REFRESH_TOKEN_EXPIRES')
 
