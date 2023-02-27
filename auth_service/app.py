@@ -9,8 +9,11 @@ from flask_jwt_extended import JWTManager
 from flask_redoc import Redoc
 from flask_swagger_ui import get_swaggerui_blueprint
 
-import logger
+import core.logger as logger
+
+
 from api.v1.blueprint import blueprint
+from core.settings import settings
 from database.cache_redis import redis_app
 from database.models import Roles
 from database.postgresql import init_db, db
@@ -42,8 +45,8 @@ swagger_blueprint = get_swaggerui_blueprint(
 @with_appcontext
 def create_superuser():
     superuser = create_user(
-        username=os.environ.get('ADMIN_USERNAME'),
-        password=os.environ.get('ADMIN_PASSWORD'))
+        username=settings.admin_username,
+        password=settings.admin_password)
     role = Roles.query.filter_by(name='admin').first()
     if superuser and role:
         assign_role_to_user(superuser, role)
@@ -53,7 +56,7 @@ def create_superuser():
 
 
 def create_app():
-    app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY')
+    app.config["JWT_SECRET_KEY"] = settings.jwt_secret_key
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_TOKEN_EXPIRES
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = REFRESH_TOKEN_EXPIRES
     

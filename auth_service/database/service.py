@@ -1,11 +1,10 @@
 import uuid
-from datetime import datetime
 from typing import List
 
-from .postgresql import db
 from werkzeug.security import generate_password_hash
 
 from .models import Users, AuthLogs, Roles, UsersRoles
+from .postgresql import db
 
 
 def create_user(username, password):

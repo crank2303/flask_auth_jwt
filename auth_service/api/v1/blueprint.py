@@ -1,8 +1,9 @@
 from flask import Blueprint
+
+from .account import sign_up, login, logout, refresh, login_history, \
+    change_login, change_password
 from .roles import create_role, delete_role, change_role, roles_list
 from .users_roles import users_roles, assign_role, detach_role
-from .account import sign_up, login, logout, refresh, login_history,\
-    change_login, change_password
 
 blueprint = Blueprint("api/v1", __name__)
 

@@ -1,81 +1,92 @@
 import uuid
-
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 
-from .postgresql import db
+from sqlalchemy import ForeignKey, Column, String, DateTime
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
+from .postgresql import Base
 
 
-class Users(db.Model):
+class Users(Base):
     __tablename__ = 'users'
 
-    id = db.Column(
+    id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
         nullable=False,
     )
-    login = db.Column(
-        db.String,
+    login = Column(
+        String(30),
         unique=True,
         nullable=False,
     )
-    password = db.Column(
-        db.String,
+    password = Column(
+        String(30),
         nullable=False,
     )
-
+    authlogs = relationship(
+        "AuthLogs",
+        back_populates="user",
+        cascade="all, delete",
+        passive_deletes=True,
+    )
     def __repr__(self):
         return f'<User {self.login}>'
 
 
-class AuthLogs(db.Model):
+class AuthLogs(Base):
     __tablename__ = 'auth_logs'
 
-    id = db.Column(
+    id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
+    user_id = Column(
         UUID(as_uuid=True),
-        ForeignKey(Users.id),
-    )
-    user_agent = db.Column(
-        db.String,
+        ForeignKey(Users.id, ondelete="CASCADE"),
         nullable=False,
     )
-    log_type = db.Column(
-        db.String,
+    user_agent = Column(
+        String(30),
+        nullable=False,
+    )
+    log_type = Column(
+        String(30),
         nullable=True,
     )
-    datetime = db.Column(
-        db.DateTime,
+    datetime = Column(
+        DateTime,
         nullable=False,
         default=datetime.now()
     )
-    ip_address = db.Column(
-        db.String,
+    ip_address = Column(
+        String(30),
         nullable=True,
+    )
+    user = relationship(
+        "Users",
+        back_populates="authlogs",
     )
 
 
-class Roles(db.Model):
+class Roles(Base):
     __tablename__ = 'roles'
 
-    id = db.Column(
+    id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
         nullable=False,
     )
-    name = db.Column(
-        db.String,
+    name = Column(
+        String(30),
         unique=True,
         nullable=False,
     )
@@ -84,21 +95,21 @@ class Roles(db.Model):
         return f'<Roles {self.name}>'
 
 
-class UsersRoles(db.Model):
+class UsersRoles(Base):
     __tablename__ = 'users_roles'
 
-    id = db.Column(
+    id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
+    user_id = Column(
         UUID(as_uuid=True),
         ForeignKey(Users.id),
     )
-    role_id = db.Column(
+    role_id = Column(
         UUID(as_uuid=True),
         ForeignKey(Roles.id),
     )

@@ -27,4 +27,4 @@ docker compose up -d --build
 
 # Документация сваггер
 
-Доступна по адресу: <a href="http://localhost:8088/api/docs">http://localhost:8088/api/docs
+Доступна по адресу: <a href="http://auth_service:8088/api/docs">http://auth_service:8088/api/docs

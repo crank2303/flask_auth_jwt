@@ -1,9 +1,6 @@
 from datetime import timedelta
 from http import HTTPStatus
 
-from database.service import auth_log, create_user, change_password, change_username
-from database.models import Users, AuthLogs
-from database.cache_redis import redis_app
 from flask import jsonify, request, make_response
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
@@ -12,6 +9,10 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from database.cache_redis import redis_app
+from database.models import Users, AuthLogs
+from database.service import auth_log, create_user, change_password, change_username
+
 ACCESS_EXPIRES = timedelta(hours=1)
 REFRESH_EXPIRES = timedelta(days=30)
 
@@ -19,10 +20,15 @@ storage = redis_app
 
 
 def sign_up():
-    username = request.values.get("username", None)
+    username = request.values.get("email", None)
     password = request.values.get("password", None)
     if not username or not password:
-        return make_response('Could not verify', HTTPStatus.UNAUTHORIZED,
+        return make_response('email or password are empty!', HTTPStatus.UNAUTHORIZED,
+                             {'WWW-Authenticate': 'Basic realm="Login required!"'})
+
+    user = Users.query.filter_by(login=username).first()
+    if user:
+        return make_response('Email has already registered!', HTTPStatus.UNAUTHORIZED,
                              {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     new_user = create_user(username, password)
@@ -31,7 +37,7 @@ def sign_up():
     refresh_token = create_refresh_token(identity=new_user.id)
     user_agent = request.headers['user_agent']
 
-    auth_log(new_user, user_agent)
+    auth_log(user=new_user, user_agent=user_agent, ip_address=request.remote_addr, log_type=request.user_agent.browser)
 
     key = ':'.join(('user_refresh', user_agent, get_jti(refresh_token)))
     storage.set(key, str(new_user.id), ex=REFRESH_EXPIRES)
@@ -45,21 +51,20 @@ def login():
     auth = request.authorization
 
     if not auth.username or not auth.password:
-        return make_response('Could not verify', HTTPStatus.UNAUTHORIZED,
+        return make_response('Email or password are empty!', HTTPStatus.UNAUTHORIZED,
                              {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     user = Users.query.filter_by(login=auth.username).first()
     if not user:
-        return make_response('Could not verify', HTTPStatus.UNAUTHORIZED,
+        return make_response('Username does not exist!', HTTPStatus.UNAUTHORIZED,
                              {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    hash = generate_password_hash(user.password)
-    if check_password_hash(hash, auth.password):
+    if check_password_hash(user.password, auth.password):
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(identity=user.id)
         user_agent = request.headers['user_agent']
 
-        auth_log(user, user_agent)
+        auth_log(user=user, user_agent=user_agent, ip_address=request.remote_addr, log_type=request.user_agent.browser)
 
         key = ':'.join(('user_refresh', user_agent, get_jti(refresh_token)))
         storage.set(key, str(user.id), ex=REFRESH_EXPIRES)
@@ -67,7 +72,7 @@ def login():
         return jsonify(access_token=access_token,
                        refresh_token=refresh_token)
 
-    return make_response('Could not verify', HTTPStatus.UNAUTHORIZED,
+    return make_response('Password is incorrect!', HTTPStatus.UNAUTHORIZED,
                          {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
 
